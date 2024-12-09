@@ -3,18 +3,37 @@ package guru.springframework.sfgjms.builder;
 import guru.springframework.sfgjms.entity.Child;
 import guru.springframework.sfgjms.entity.state.ChildDay;
 import guru.springframework.sfgjms.entity.state.ChildEvent;
+import guru.springframework.sfgjms.service.ChildService;
+import lombok.Data;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
+import org.springframework.stereotype.Component;
+
+import static guru.springframework.sfgjms.entity.state.ChildEvent.DOING_HOMEWORK;
+import static guru.springframework.sfgjms.entity.state.ChildEvent.GOING_TO_SCHOOL;
 
 @Log
+@Data
+@Component
 public class ActionChildEvent {
+    @Autowired
+    private ChildService service;
+    private Child child;
 
-
-    public Action<ChildDay, ChildEvent> action(Child child, ChildEvent event){
-        switch (event){
+    public Action<ChildDay, ChildEvent> action(ChildEvent event) {
+        switch (event) {
             case GOING_TO_SCHOOL:
-                return goToSchool(child);
+                System.out.println("GO");
+                return new Action<ChildDay, ChildEvent>() {
+                    @Override
+                    public void execute(StateContext<ChildDay, ChildEvent> context) {
+                        child.setDay(context.getTarget().getId());
+                        service.save(child);
+                        log.info("Method go to school executed: " + child.toString());
+                    }
+                };
             case DOING_HOMEWORK:
                 return doHomework();
             case SPORT_ACTIVITY:
@@ -28,17 +47,19 @@ public class ActionChildEvent {
         }
     }
 
-    private Action<ChildDay, ChildEvent> goToSchool(Child child){
+    private Action<ChildDay, ChildEvent> goToSchool() {
         return new Action<ChildDay, ChildEvent>() {
             @Override
             public void execute(StateContext<ChildDay, ChildEvent> context) {
-                log.info("Method go to school executed");
+                child.setDay(context.getTarget().getId());
+                service.save(child);
+                log.info("Method go to school executed: " + child.toString());
             }
         };
 
     }
 
-    private Action<ChildDay, ChildEvent> playVideoGame(){
+    private Action<ChildDay, ChildEvent> playVideoGame() {
 
         return new Action<ChildDay, ChildEvent>() {
             @Override
@@ -48,7 +69,7 @@ public class ActionChildEvent {
         };
     }
 
-    private Action<ChildDay, ChildEvent> doHomework(){
+    private Action<ChildDay, ChildEvent> doHomework() {
 
         return new Action<ChildDay, ChildEvent>() {
             @Override
@@ -59,7 +80,7 @@ public class ActionChildEvent {
     }
 
 
-    private Action<ChildDay, ChildEvent> leisureActivity(){
+    private Action<ChildDay, ChildEvent> leisureActivity() {
 
         return new Action<ChildDay, ChildEvent>() {
             @Override
@@ -69,7 +90,7 @@ public class ActionChildEvent {
         };
     }
 
-    private Action<ChildDay, ChildEvent> sportActivity(){
+    private Action<ChildDay, ChildEvent> sportActivity() {
 
         return new Action<ChildDay, ChildEvent>() {
             @Override
@@ -79,7 +100,7 @@ public class ActionChildEvent {
         };
     }
 
-    private Action<ChildDay, ChildEvent> complete(){
+    private Action<ChildDay, ChildEvent> complete() {
 
         return new Action<ChildDay, ChildEvent>() {
             @Override

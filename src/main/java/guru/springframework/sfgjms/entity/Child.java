@@ -18,11 +18,9 @@ import javax.persistence.*;
 public class Child implements Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String name;
     private String surname;
-    private boolean isParticipate;
-
     private int age;
    @Enumerated(EnumType.STRING)
     public ChildDay day;

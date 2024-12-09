@@ -19,14 +19,22 @@ public class TypeSafeSMService {
     private ChildService childService;
 
     public StateMachine<ChildDay, ChildEvent> receiveSM(Config config) throws Exception {
-        Child child = childService.findById(config.getLong("input.id"));
-        ActionChildEvent ac = new ActionChildEvent();
-        ChildDay source = ChildDay.valueOf(config.getString("input.source"));
-        ChildDay target = ChildDay.valueOf(config.getString("input.target"));
-        ChildEvent event = ChildEvent.valueOf(config.getString("input.event"));
-
-        builder.build(source, target, event, ac.action(child, event));
+        System.out.println(config.toString());
+        Child child = childService.findById(config.getLong("child.id"));
+        ChildDay source = ChildDay.valueOf(config.getString("child.source"));
+        ChildDay target = ChildDay.valueOf(config.getString("child.target"));
+        ChildEvent event = ChildEvent.valueOf(config.getString("child.event"));
+        System.out.println(source);
+        System.out.println(target);
+        System.out.println(event);
+        builder.build(child, source, target, event);
         return builder.buildMachine();
     }
+
+    public void setNewDay(Child child){
+        child.setDay(ChildDay.NEW);
+        childService.save(child);
+    }
+
 
 }

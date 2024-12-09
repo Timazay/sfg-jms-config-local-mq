@@ -27,24 +27,31 @@ public class SendTestController {
     @Autowired
     private SendMessengerService service;
 
-    @GetMapping("/school")
-    public String sendEventGoToSchool(@RequestParam Long id) throws Exception {
-  /*      Child anton = new Child();
+    @GetMapping("/receive")
+    public String receive() throws Exception {
+     /*  Child anton = new Child();
         anton.setName("Anton");
         anton.setSurname("Mas");
         anton.setAge(11);
-        childService.create(anton);*/
-        Child child = childService.findById(id);
-        Config config = ConfigProvider.configReader;
+        typeSafeSMService.setNewDay(anton);
+        childService.save(anton);*/
+        Config config = service.receive();
+        System.out.println(config.toString());
         StateMachine<ChildDay, ChildEvent> sm = typeSafeSMService.receiveSM(config);
+        System.out.println(sm.getState().getId());
         sm.sendEvent(ChildEvent.GOING_TO_SCHOOL);
-        sm.start();
-        return "Message sent with ID: " + id;
+        System.out.println(sm.getState().getId());
+        return "Message sent";
     }
 
     @GetMapping("/send")
-    public String sendMsg(@RequestParam String msg) {
-        service.sendMsg(msg);
+    public String sendGoToSchool() {
+        Config config = ConfigProvider.createConf(1,
+                ChildDay.NEW.toString(),
+                ChildDay.WEEKDAY.toString(),
+                ChildEvent.GOING_TO_SCHOOL.toString());
+     
+        service.sendMsg(config);
         return "success";
     }
 

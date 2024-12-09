@@ -76,6 +76,12 @@
 			<artifactId>spring-statemachine-starter</artifactId>
 			<version>3.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>3.4.13</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

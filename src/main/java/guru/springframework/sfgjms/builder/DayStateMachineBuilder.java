@@ -1,11 +1,13 @@
 package guru.springframework.sfgjms.builder;
 
 
+import guru.springframework.sfgjms.entity.Child;
 import guru.springframework.sfgjms.entity.state.ChildDay;
 import guru.springframework.sfgjms.entity.state.ChildEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.StateMachineBuilder;
@@ -18,41 +20,42 @@ import org.springframework.stereotype.Component;
 public class DayStateMachineBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private StateMachineBuilder.Builder<ChildDay, ChildEvent> builder;
+    @Autowired
+    private ActionChildEvent action;
 
-    public DayStateMachineBuilder() {
+    {
         this.builder = StateMachineBuilder.builder();
+        try {
+            builder.configureConfiguration()
+                    .withConfiguration()
+                    .listener(listener())
+                    .autoStartup(true);
+
+            builder.configureStates()
+                    .withStates()
+                    .initial(ChildDay.NEW)
+                    .state(ChildDay.WEEKEND)
+                    .state(ChildDay.WEEKDAY)
+                    .end(ChildDay.END);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
     public StateMachine<ChildDay, ChildEvent> buildMachine() throws Exception {
-       /* StateMachineBuilder.Builder<ChildDay, ChildEvent> builder = StateMachineBuilder.builder();*/
-
-
-        builder.configureStates()
-                .withStates()
-                .initial(ChildDay.NEW)
-                .state(ChildDay.WEEKEND)
-                .state(ChildDay.WEEKDAY)
-                .end(ChildDay.END);
-
-        builder.configureConfiguration()
-                .withConfiguration()
-                .listener(listener())
-                .autoStartup(true);
-     /*   builder.configureTransitions().withExternal().source(ChildDay.NEW).target(ChildDay.NEW).event(ChildEvent.LEISURE_ACTIVITY);*/
         return builder.build();
     }
 
-    public DayStateMachineBuilder build(ChildDay source, ChildDay target, ChildEvent event,
-                                        Action<ChildDay, ChildEvent> action) throws Exception {
-
-        if (action != null) {
+    public DayStateMachineBuilder build(Child child, ChildDay source, ChildDay target, ChildEvent event) throws Exception {
+        action.setChild(child);
+        if (child != null) {
             builder.configureTransitions()
                     .withExternal()
                     .source(source)
                     .target(target)
                     .event(event)
-                    .action(action);
+                    .action(action.action(event));
         } else {
             builder.configureTransitions()
                     .withExternal()
@@ -69,7 +72,7 @@ public class DayStateMachineBuilder {
         return new StateMachineListenerAdapter<ChildDay, ChildEvent>() {
             @Override
             public void stateChanged(State<ChildDay, ChildEvent> from, State<ChildDay, ChildEvent> to) {
-                logger.info("State change from " + from.getIds() + " to " + to.getIds());
+                logger.info("State change from " + from.getId() + " to " + to.getId());
             }
         };
     }

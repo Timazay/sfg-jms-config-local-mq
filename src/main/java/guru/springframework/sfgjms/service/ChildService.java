@@ -15,10 +15,10 @@ public class ChildService {
         this.repository = repository;
     }
 
-public Child findById(Long id){
+public Child findById(long id){
     return repository.getOne(id);
 }
-    public void create(Child child) {
+    public void save(Child child) {
         repository.save(child);
     }
 }

@@ -1,5 +1,6 @@
 package guru.springframework.sfgjms.config;
 
+import com.typesafe.config.Config;
 import org.springframework.boot.autoconfigure.jms.artemis.ArtemisConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.jms.support.converter.MessageType;
  */
 @Configuration
 public class JmsConfig {
+    public final static String CHILD_QUEUE = "child-queue";
 
     @Bean
     public ArtemisConfigurationCustomizer customizer() {
@@ -34,4 +36,6 @@ public class JmsConfig {
         converter.setTypeIdPropertyName("_type");
         return converter;
     }
+
+
 }
