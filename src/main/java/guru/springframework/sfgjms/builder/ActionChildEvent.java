@@ -25,14 +25,7 @@ public class ActionChildEvent {
         switch (event) {
             case GOING_TO_SCHOOL:
                 System.out.println("GO");
-                return new Action<ChildDay, ChildEvent>() {
-                    @Override
-                    public void execute(StateContext<ChildDay, ChildEvent> context) {
-                        child.setDay(context.getTarget().getId());
-                        service.save(child);
-                        log.info("Method go to school executed: " + child.toString());
-                    }
-                };
+                return goToSchool();
             case DOING_HOMEWORK:
                 return doHomework();
             case SPORT_ACTIVITY:
@@ -63,6 +56,7 @@ public class ActionChildEvent {
         return new Action<ChildDay, ChildEvent>() {
             @Override
             public void execute(StateContext<ChildDay, ChildEvent> context) {
+                child.setDay(context.getTarget().getId());
                 log.info("Method play video games executed");
             }
         };
@@ -73,6 +67,7 @@ public class ActionChildEvent {
         return new Action<ChildDay, ChildEvent>() {
             @Override
             public void execute(StateContext<ChildDay, ChildEvent> context) {
+                child.setDay(context.getTarget().getId());
                 log.info("Method do homework executed");
             }
         };
@@ -84,6 +79,7 @@ public class ActionChildEvent {
         return new Action<ChildDay, ChildEvent>() {
             @Override
             public void execute(StateContext<ChildDay, ChildEvent> context) {
+                child.setDay(context.getTarget().getId());
                 log.info("Method leisureActivity executed");
             }
         };
@@ -94,6 +90,8 @@ public class ActionChildEvent {
         return new Action<ChildDay, ChildEvent>() {
             @Override
             public void execute(StateContext<ChildDay, ChildEvent> context) {
+                child.setDay(context.getTarget().getId());
+                service.save(child);
                 log.info("Method sport activity executed");
             }
         };

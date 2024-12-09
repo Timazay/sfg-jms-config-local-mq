@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor // java -jar FamilyProj-0.0.1-SNAPSHOT.jar --server.port=8081
 @Entity
 @Table(name = "children")
-public class Child implements Member {
+public class Child {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

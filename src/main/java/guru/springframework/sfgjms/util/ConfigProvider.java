@@ -11,7 +11,8 @@ public interface ConfigProvider {
     static Config readConfString(String config){
         return ConfigFactory.parseString(config);
     }
-    static Config createConf(long childId, List<StateMachineWrapper> conf){
+
+    static Config createChildDayConf(long childId, List<StateMachineWrapper> conf){
         Config config = ConfigFactory.empty();
 
         List<ConfigObject> childConfigs = new ArrayList<>();

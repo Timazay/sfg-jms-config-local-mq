@@ -22,7 +22,6 @@ public class DayStateMachineBuilder {
     private StateMachineBuilder.Builder<ChildDay, ChildEvent> builder;
     @Autowired
     private ActionChildEvent action;
-
     {
         this.builder = StateMachineBuilder.builder();
         try {
@@ -42,7 +41,6 @@ public class DayStateMachineBuilder {
         }
     }
 
-
     public StateMachine<ChildDay, ChildEvent> buildMachine() throws Exception {
         return builder.build();
     }
@@ -56,12 +54,8 @@ public class DayStateMachineBuilder {
                     .target(target)
                     .event(event)
                     .action(action.action(event));
-
-
-
         return this;
     }
-
     public StateMachineListener<ChildDay, ChildEvent> listener() {
         return new StateMachineListenerAdapter<ChildDay, ChildEvent>() {
             @Override

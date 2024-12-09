@@ -22,25 +22,17 @@ public class TypeSafeSMService {
     private ChildService childService;
 
     public StateMachine<ChildDay, ChildEvent> receiveSM(Config config) throws Exception {
-        List<StateMachineWrapper> children = new ArrayList<>();
         Child child = childService.findById(config.getLong("id"));
-        // Получаем список конфигураций детей
+
         List<? extends Config> childConfigs = config.getConfigList("children");
-        // Проходим по каждой конфигурации ребенка и создаем объект ChildDayConf
+
         for (Config childConfig : childConfigs) {
             ChildDay source = ChildDay.valueOf(childConfig.getString("source"));
             ChildDay target = ChildDay.valueOf(childConfig.getString("target"));
             ChildEvent event = ChildEvent.valueOf(childConfig.getString("event"));
-            // Создаем новый объект ChildDayConf и добавляем его в список
+
             builder.build(child, source, target, event);
-
-
         }
-
- /*       Child child = childService.findById(config.getLong("child.id"));
-        ChildDay source = ChildDay.valueOf(config.getString("child.source"));
-        ChildDay target = ChildDay.valueOf(config.getString("child.target"));
-        ChildEvent event = ChildEvent.valueOf(config.getString("child.event"));*/
 
         return builder.buildMachine();
     }
