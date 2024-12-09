@@ -1,22 +1,32 @@
 package guru.springframework.sfgjms.util;
 
 import com.typesafe.config.*;
-import guru.springframework.sfgjms.entity.state.ChildDay;
-import guru.springframework.sfgjms.entity.state.ChildEvent;
+import guru.springframework.sfgjms.entity.StateMachineWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface ConfigProvider {
 
-    static Config readConf(Config config){
-        return ConfigFactory.load(config);
-    }
     static Config readConfString(String config){
         return ConfigFactory.parseString(config);
     }
-    static Config createConf(int id, String source, String target, String event){
-        return ConfigFactory.empty()
-                .withValue("child.id", ConfigValueFactory.fromAnyRef(id))
-                .withValue("child.source", ConfigValueFactory.fromAnyRef(source))
-                .withValue("child.target", ConfigValueFactory.fromAnyRef(target))
-                .withValue("child.event", ConfigValueFactory.fromAnyRef(event));
+    static Config createConf(long childId, List<StateMachineWrapper> conf){
+        Config config = ConfigFactory.empty();
+
+        List<ConfigObject> childConfigs = new ArrayList<>();
+        for (StateMachineWrapper child : conf) {
+            ConfigObject childConfig = ConfigFactory.empty()
+                    .withValue("source", ConfigValueFactory.fromAnyRef(child.getSource().toString()))
+                    .withValue("target", ConfigValueFactory.fromAnyRef(child.getTarget().toString()))
+                    .withValue("event", ConfigValueFactory.fromAnyRef(child.getEvent().toString()))
+                    .root();
+
+            childConfigs.add(childConfig);
+        }
+
+        return config
+                .withValue("id", ConfigValueFactory.fromAnyRef(childId))
+                .withValue("children", ConfigValueFactory.fromIterable(childConfigs));
     }
 }

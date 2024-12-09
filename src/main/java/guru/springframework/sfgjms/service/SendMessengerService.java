@@ -7,6 +7,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
 import guru.springframework.sfgjms.config.JmsConfig;
+import guru.springframework.sfgjms.util.ConfigProvider;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,28 +27,22 @@ import java.util.UUID;
 public class SendMessengerService {
     @Autowired
     private JmsTemplate jmsTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
 
 
     public void sendMsg(Config config) {
         String msg = config.toString();
         int startIndex = msg.indexOf('{');
         int endIndex = msg.lastIndexOf('}');
-        jmsTemplate.convertAndSend(JmsConfig.CHILD_QUEUE,  msg.substring(startIndex, endIndex + 1));
+        jmsTemplate.convertAndSend(JmsConfig.CHILD_QUEUE, msg.substring(startIndex, endIndex + 1));
     }
-
 
 
     public Config receive() {
         String message = (String) jmsTemplate.receiveAndConvert(JmsConfig.CHILD_QUEUE);
+        log.info(message);
+        return ConfigProvider.readConfString(message);
 
-                log.info(message);
-
-                return ConfigFactory.parseString(message);
-
-
-        }
+    }
         /*Message message = (Message) jmsTemplate.receiveAndConvert(JmsConfig.CHILD_QUEUE);
         if (message == null) {
             return null;
@@ -65,5 +60,5 @@ public class SendMessengerService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }*/
-    }
+}
 

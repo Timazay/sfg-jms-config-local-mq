@@ -49,20 +49,14 @@ public class DayStateMachineBuilder {
 
     public DayStateMachineBuilder build(Child child, ChildDay source, ChildDay target, ChildEvent event) throws Exception {
         action.setChild(child);
-        if (child != null) {
+        /*if (child != null) {*/
             builder.configureTransitions()
                     .withExternal()
                     .source(source)
                     .target(target)
                     .event(event)
                     .action(action.action(event));
-        } else {
-            builder.configureTransitions()
-                    .withExternal()
-                    .source(source)
-                    .target(target)
-                    .event(event);
-        }
+
 
 
         return this;

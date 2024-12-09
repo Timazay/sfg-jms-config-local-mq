@@ -11,8 +11,7 @@ import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
 
-import static guru.springframework.sfgjms.entity.state.ChildEvent.DOING_HOMEWORK;
-import static guru.springframework.sfgjms.entity.state.ChildEvent.GOING_TO_SCHOOL;
+import static guru.springframework.sfgjms.entity.state.ChildEvent.*;
 
 @Log
 @Data
@@ -105,6 +104,8 @@ public class ActionChildEvent {
         return new Action<ChildDay, ChildEvent>() {
             @Override
             public void execute(StateContext<ChildDay, ChildEvent> context) {
+                child.setDay(ChildDay.END);
+                service.save(child);
                 log.info("Method complete executed");
             }
         };
