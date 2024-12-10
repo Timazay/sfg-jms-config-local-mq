@@ -41,12 +41,12 @@ public class SendTestController {
     }
 
     @GetMapping("/send")
-    public String sendGoToSchool(@RequestParam long childId) {
+    public String sendGoToSchool(/*@RequestParam long childId*/) {
         List<StateMachineWrapper> confs = new ArrayList<>();
         confs.add(new StateMachineWrapper(ChildDay.NEW, ChildDay.WEEKDAY, ChildEvent.GOING_TO_SCHOOL));
         confs.add(new StateMachineWrapper(ChildDay.WEEKDAY, ChildDay.WEEKDAY, ChildEvent.DOING_HOMEWORK));
         confs.add(new StateMachineWrapper(ChildDay.WEEKDAY, ChildDay.END, ChildEvent.COMPLETE));
-        service.sendMsg(childId, confs);
+        service.sendMsg(1, confs);
         return "success";
     }
 

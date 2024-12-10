@@ -23,6 +23,7 @@ public class TypeSafeSMService {
 
     public StateMachine<ChildDay, ChildEvent> receiveSM(Config config) throws Exception {
         Child child = childService.findById(config.getLong("id"));
+        System.out.println(child.toString());
 
         List<? extends Config> childConfigs = config.getConfigList("children");
 
