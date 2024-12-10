@@ -26,6 +26,19 @@ public class SendTestController {
     @Autowired
     private SendMessengerService service;
 
+
+// Первым вызывать /send он отправит json в mq с ребенком у которого id = 1
+    @GetMapping("/send")
+    public String sendGoToSchool(/*@RequestParam long childId*/) {
+        List<StateMachineWrapper> confs = new ArrayList<>();
+        confs.add(new StateMachineWrapper(ChildDay.NEW, ChildDay.WEEKDAY, ChildEvent.GOING_TO_SCHOOL));
+        confs.add(new StateMachineWrapper(ChildDay.WEEKDAY, ChildDay.WEEKDAY, ChildEvent.DOING_HOMEWORK));
+        confs.add(new StateMachineWrapper(ChildDay.WEEKDAY, ChildDay.END, ChildEvent.COMPLETE));
+        service.sendMsg(1, confs);
+        return "success";
+    }
+// вторым вызвать /receive он получает json из mq, парсит его и первращает в конфиг стейт машины
+// в логах будут видны вызванные ивенты и состояния    
     @GetMapping("/receive")
     public String receive() throws Exception {
         Config config = service.receive();
@@ -39,16 +52,4 @@ public class SendTestController {
         log.info(sm.getState().getId().toString());
         return "Message receive";
     }
-
-    @GetMapping("/send")
-    public String sendGoToSchool(/*@RequestParam long childId*/) {
-        List<StateMachineWrapper> confs = new ArrayList<>();
-        confs.add(new StateMachineWrapper(ChildDay.NEW, ChildDay.WEEKDAY, ChildEvent.GOING_TO_SCHOOL));
-        confs.add(new StateMachineWrapper(ChildDay.WEEKDAY, ChildDay.WEEKDAY, ChildEvent.DOING_HOMEWORK));
-        confs.add(new StateMachineWrapper(ChildDay.WEEKDAY, ChildDay.END, ChildEvent.COMPLETE));
-        service.sendMsg(1, confs);
-        return "success";
-    }
-
-    /*docker run --detach --name artemiscontainer -p 61616:61616 -p 8161:8161 --rm apache/activemq-artemis:latest-alpine*/
 }
