@@ -45,8 +45,9 @@ public class SendTestController {
         StateMachine<ChildDay, ChildEvent> sm = typeSafeSMService.receiveSM(config);
 
         log.info(sm.getState().getId().toString());
-        sm.sendEvent(ChildEvent.GOING_TO_SCHOOL);
         sm.sendEvent(ChildEvent.DOING_HOMEWORK);
+        sm.sendEvent(ChildEvent.GOING_TO_SCHOOL);
+        sm.sendEvent(ChildEvent.LEISURE_ACTIVITY);
         log.info(sm.getState().getId().toString());
         sm.sendEvent(ChildEvent.COMPLETE);
         log.info(sm.getState().getId().toString());
